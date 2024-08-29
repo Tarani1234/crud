@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const app = express();
 const port = 3000;
 app.use(express.json());
+// database store 
 mongoose.connect("mongodb://localhost:27017")
 .then(()=>{
     console.log('connected to mongodb');
@@ -11,6 +12,7 @@ mongoose.connect("mongodb://localhost:27017")
     console.log('error message');
     
 })
+//database schema
 const bookSchema = new mongoose.Schema({
   title: String,
   author: String
@@ -19,6 +21,10 @@ const bookSchema = new mongoose.Schema({
 const Book = mongoose.model('Book', bookSchema);
 
 module.exports = Book;
+app.get('/books', async (req, res) => {
+  const books = await Book.find();
+  res.send(books);
+});
 
 app.post('/books', async (req, res) => {
   try {
@@ -41,7 +47,13 @@ app.get('/books/:id', async (req, res) => {
 });
 app.put('/books/:id', async (req, res) => {
    try{
-    const book = await Book.findByIdAndUpdate(req.params.id, { title: req.body.title, author: req.body.author }, { new: true });
+    const book = await Book.findByIdAndUpdate(req.params.id, 
+      { title: req.body.title,
+         author: req.body.author 
+        }, 
+        { 
+          new: true 
+        });
     if (!book) return res.status(404).send('Book not found');
     res.send(book);
    }
