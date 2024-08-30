@@ -53,7 +53,7 @@ const App = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  };        
 
   // Delete a book
   const deleteBook = async (id) => {
